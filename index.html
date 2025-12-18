@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>隔壁的日常光</title>
+    <!-- 引入Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #F8F6F2;
+            color: #2C2C2C;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        /* 字体引入 */
+        @font-face {
+            font-family: 'Noto Serif SC';
+            src: url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&display=swap');
+        }
+
+        /* 导航栏样式 */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(248, 246, 242, 0.95);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        nav.hidden {
+            transform: translateY(-100%);
+        }
+
+        .logo {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2C2C2C;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2C2C2C;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #A8B5A0;
+        }
+
+        /* 汉堡菜单样式 */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background-color: #2C2C2C;
+            transition: all 0.3s ease;
+        }
+
+        /* Hero区样式 */
+        .hero {
+            height: 100vh;
+            background-image: url('images/hero.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 2rem;
+            color: #2C2C2C;
+        }
+
+        .hero h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .hero .info {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* 精选作品样式 */
+        .featured-works {
+            padding: 5rem 5%;
+            text-align: center;
+        }
+
+        .featured-works h2 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            color: #2C2C2C;
+        }
+
+        .works-grid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .work-item {
+            width: 300px;
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+
+        .work-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .work-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+        .work-item .date {
+            font-size: 0.9rem;
+            color: #A8B5A0;
+            margin-bottom: 0.5rem;
+        }
+
+        .work-item .description {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* 关于小卡片样式 */
+        .about-card {
+            padding: 5rem 5%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            background-color: #fff;
+            margin: 0 5%;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .about-text {
+            max-width: 500px;
+        }
+
+        .about-text h2 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #2C2C2C;
+        }
+
+        .about-text p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .about-text .email {
+            color: #A8B5A0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .about-text .email:hover {
+            color: #2C2C2C;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            /* 导航栏响应式 */
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                right: -100%;
+                flex-direction: column;
+                background-color: rgba(248, 246, 242, 0.98);
+                width: 100%;
+                padding: 2rem;
+                transition: right 0.3s ease;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            /* Hero区响应式 */
+            .hero {
+                background-attachment: scroll;
+                height: 80vh;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            /* 精选作品响应式 */
+            .works-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .work-item {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            /* 关于小卡片响应式 */
+            .about-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 3rem 1.5rem;
+            }
+
+            .avatar {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav id="navbar">
+        <a href="index.html" class="logo">隔壁的日常光</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="photography-portfolio.html">作品</a></li>
+            <li><a href="contact.html">联系</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Hero区 -->
+    <section class="hero">
+        <h1>隔壁的日常光</h1>
+        <p>专业摄影师在等极光，我在等楼下小树发芽</p>
+        <div class="info">2006年生，日常记录爱好者</div>
+    </section>
+
+    <!-- 精选作品预览 -->
+    <section class="featured-works">
+        <h2>精选作品</h2>
+        <div class="works-grid" id="worksGrid">
+            <!-- 作品将通过JavaScript动态生成 -->
+        </div>
+    </section>
+
+    <!-- 关于小卡片 -->
+    <section class="about-card">
+        <img src="images/avatar.jpg" alt="头像" class="avatar">
+        <div class="about-text">
+            <h2>Hi，我是涂晓琳</h2>
+            <p>一个喜欢在上班路上东张西望的普通人<br>这里的照片全用手机拍摄<br>不追求专业，只记录「啊，原来这么美」的瞬间</p>
+            <a href="mailto:2741735088@qq.com" class="email">2741735088@qq.com</a>
+        </div>
+    </section>
+
+    <script>
+        // 导航栏滚动隐藏效果
+        let lastScrollTop = 0;
+        const navbar = document.getElementById('navbar');
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                navbar.classList.add('hidden');
+            } else {
+                navbar.classList.remove('hidden');
+            }
+            
+            lastScrollTop = scrollTop;
+        });
+
+        // 汉堡菜单功能
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        // 精选作品数据（从photography-portfolio.html随机选取3张）
+        const featuredWorks = [
+            {
+                id: 1,
+                imageUrl: 'images/photo1.jpg',
+                date: '12.18',
+                description: '清晨的山间，云雾缭绕，宛如仙境',
+                originalId: 1
+            },
+            {
+                id: 2,
+                imageUrl: 'images/photo3.jpg',
+                date: '12.16',
+                description: '夕阳西下，金色的余晖洒在海面上',
+                originalId: 3
+            },
+            {
+                id: 3,
+                imageUrl: 'images/photo6.jpg',
+                date: '12.13',
+                description: '银装素裹的世界，纯净而美丽',
+                originalId: 6
+            }
+        ];
+
+        // 渲染精选作品
+        const worksGrid = document.getElementById('worksGrid');
+        featuredWorks.forEach(work => {
+            const workItem = document.createElement('div');
+            workItem.className = 'work-item';
+            workItem.innerHTML = `
+                <img src="${work.imageUrl}" alt="作品" onclick="openWork(${work.originalId})">
+                <div class="date">${work.date}</div>
+                <div class="description">${work.description}</div>
+            `;
+            worksGrid.appendChild(workItem);
+        });
+
+        // 点击作品跳转到对应位置
+        function openWork(originalId) {
+            window.location.href = `photography-portfolio.html#photo-${originalId}`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的摄影作品集</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #F8F6F2;
+            color: #2C2C2C;
+            line-height: 1.6;
+        }
+
+        /* 回到顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(168, 181, 160, 0.8);
+            color: white;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 99;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background-color: #A8B5A0;
+        }
+        
+        /* 头部样式 */
+        header {
+            background-color: #F8F6F2;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        /* Hero区样式 */
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+            padding: 4rem 0;
+        }
+        
+        /* Hero背景图 */
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 150%;
+            background-image: url('https://picsum.photos/id/1016/1920/1080');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        /* Hero内容 */
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #2C2C2C;
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+        }
+
+        header p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+        }
+
+        /* 容器样式 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15%;
+        }
+
+        /* 瀑布流布局 */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4rem;
+            grid-row-gap: 6rem;
+            margin-bottom: 3rem;
+        }
+
+        /* 照片卡片 */
+        .photo-card {
+            background-color: transparent;
+            border-radius: 8px;
+            overflow: visible;
+            box-shadow: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        /* 新点赞心跳动画 */
+        @keyframes heartbeat-new {
+            0% {
+                transform: scale(1);
+            }
+            20% {
+                transform: scale(0.8);
+            }
+            40% {
+                transform: scale(1.2);
+            }
+            60% {
+                transform: scale(1);
+            }
+            80% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* 图片容器，用于定位水印 */
+        .photo-container {
+            position: relative;
+            display: block;
+            width: 100%;
+        }
+        
+        .photo-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 0 60px 0;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            border: 1px solid #E8E3D9;
+            box-sizing: border-box;
+        }
+        
+        /* 水印样式 */
+        .photo-container::after {
+            content: "日常光 · 涂晓琳";
+            position: absolute;
+            right: 0;
+            bottom: 40px;
+            font-family: 'Kalam', cursive;
+            color: rgba(153, 153, 153, 0.5);
+            font-size: 12px;
+            opacity: 0.5;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .photo-card img:hover {
+            transform: scale(1.02);
+        }
+
+        .photo-info {
+            padding: 0 10px 1rem;
+            text-align: left;
+            width: 100%;
+            margin: 0;
+        }
+
+        /* 时间线样式 */
+        .timeline {
+            margin-bottom: 1rem;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        /* 时间线连接线 */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background-color: #E8E3D9;
+        }
+        
+        /* 年份样式 */
+        .timeline-year {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 8px;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* 年份连接线 */
+        .timeline-year::before {
+            content: '';
+            position: absolute;
+            left: -19px;
+            top: 6px;
+            width: 10px;
+            height: 1px;
+            background-color: #999;
+        }
+        
+        /* 月份样式 */
+        .timeline-month {
+            font-size: 13px;
+            color: #999;
+            margin-left: 20px;
+            margin-bottom: 8px;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* 月份连接线 */
+        .timeline-month::before {
+            content: '└─';
+            position: absolute;
+            left: -26px;
+            top: 0;
+            color: #999;
+            font-size: 13px;
+            line-height: 1;
+        }
+        
+        /* 日期样式 */
+        .timeline-day {
+            font-size: 13px;
+            color: #999;
+            margin-left: 40px;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* 日期连接线 */
+        .timeline-day::before {
+            content: '└─';
+            position: absolute;
+            left: -32px;
+            top: 0;
+            color: #999;
+            font-size: 13px;
+            line-height: 1;
+        }
+
+        .photo-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #2C2C2C;
+            font-family: 'Noto Serif SC', serif;
+            text-align: center;
+        }
+
+        .photo-description {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #666;
+            margin-bottom: 1rem;
+            text-indent: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+        }
+
+        .photo-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        /* 点赞按钮 */
+        .like-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #A8B5A0;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .like-btn .like-count {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background-color: #D4A5A5;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .like-btn .like-count.visible {
+            display: inline-block;
+        }
+        
+        .like-btn.liked i {
+            animation: heartbeat-new 0.5s ease;
+        }
+
+        .like-btn:hover {
+            color: #D4A5A5;
+        }
+
+        .like-btn.liked {
+            color: #D4A5A5;
+        }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            animation: zoomIn 0.3s ease;
+            position: relative;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+
+
+        /* 留言区样式 */
+        .comment-section {
+            margin-top: 6rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid #E8E3D9;
+        }
+
+        .comment-section h3 {
+            font-size: 18px;
+            margin-bottom: 1.5rem;
+            color: #2C2C2C;
+            font-family: 'Noto Serif SC', serif;
+            text-align: center;
+        }
+
+        .comment-box {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .comment-box input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid #E8E3D9;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #fff;
+        }
+
+        .comment-box button {
+            padding: 0.8rem 2rem;
+            background-color: #A8B5A0;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .comment-box button:hover {
+            background-color: #95A08D;
+        }
+
+        .comment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .comment-item {
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #fff;
+            border: 1px solid #E8E3D9;
+        }
+
+        .comment-item .comment-text {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+            color: #2C2C2C;
+        }
+
+        .comment-item .comment-time {
+            font-size: 12px;
+            color: #999;
+            text-align: right;
+        }
+
+        /* 页脚样式 */
+        footer {
+            text-align: center;
+            padding: 60px 0;
+            color: #999999;
+            font-size: 14px;
+            background-color: #F8F6F2;
+            margin-top: 2rem;
+            border-top: 1px solid #E8E3D9;
+        }
+
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            /* 调整容器边距 */
+            .container {
+                padding: 0 10%;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .photo-grid {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+                grid-row-gap: 6rem;
+            }
+
+            .photo-card img {
+                width: 100%;
+                margin-bottom: 60px;
+            }
+            
+            .photo-info {
+                width: 100%;
+            }
+
+            .modal-content {
+                max-width: 95%;
+                max-height: 95%;
+            }
+
+            .comments-section {
+                padding: 1.5rem 1rem;
+            }
+            
+            /* 关于我区块响应式 */
+            .about-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+            
+            .about-avatar img {
+                width: 120px;
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* 调整容器边距 */
+            .container {
+                padding: 0 8%;
+            }
+            
+            .photo-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                grid-row-gap: 5rem;
+            }
+
+            header {
+                padding: 1.5rem 0;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .photo-card img {
+                width: 100%;
+                margin-bottom: 50px;
+            }
+            
+            .photo-info {
+                width: 100%;
+            }
+            
+            /* 响应式时间线 */
+            .timeline {
+                padding-left: 15px;
+            }
+            
+            .photo-description {
+                text-indent: 15px;
+            }
+        }
+    </style>
+    <!-- Google Fonts - Noto Serif SC & Inter & Kalam -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Kalam:wght@300;400;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="hero-section">
+        <div class="hero-background"></div>
+        <div class="hero-content">
+
+            <h1>我的摄影作品集</h1>
+            <p>用镜头捕捉生活中的美好瞬间，记录身边的精彩故事</p>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 照片瀑布流 -->
+        <div class="photo-grid" id="photoGrid">
+            <!-- 照片将通过JavaScript动态生成 -->
+        </div>
+
+        <!-- 留言框 -->
+        <div class="comment-section">
+            <h3>留下你想说的</h3>
+            <div class="comment-box">
+                <input type="text" id="commentInput" placeholder="写下你的留言...">
+                <button onclick="addComment()">发送</button>
+            </div>
+            <div id="commentList" class="comment-list"></div>
+        </div>
+
+        <!-- 返回首页按钮 -->
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="index.html" style="
+                display: inline-block;
+                padding: 0.8rem 2rem;
+                background-color: #A8B5A0;
+                color: white;
+                text-decoration: none;
+                border-radius: 8px;
+                font-size: 14px;
+                transition: background-color 0.3s ease;
+            ">
+                <i class="fas fa-home"></i> 返回首页
+            </a>
+        </div>
+
+    </div>
+
+    <!-- 模态框 -->
+    <div class="modal" id="photoModal">
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="放大查看">
+        </div>
+    </div>
+
+
+
+    <!-- 回到顶部按钮 -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>所有照片均为日常记录，未经许可请勿转载</p>
+    </footer>
+
+    <script>
+        // 照片数据
+        const photos = [
+            {
+                id: 1,
+                title: "群山云海",
+                description: "湛蓝天空下，白云如浪翻滚，覆盖连绵起伏的翠绿群山",
+                imageUrl: "images/photo1.jpg",
+                date: {
+                    year: 2024,
+                    month: 12,
+                    day: 18,
+                    weekday: "周三",
+                    weather: "晴"
+                }
+            },
+            {
+                id: 2,
+                title: "花缀晴空",
+                description: "淡紫色花枝在风中摇曳，映衬着蓝天白云与远山轮廓",
+                imageUrl: "images/photo2.jpg",
+                date: {
+                    year: 2024,
+                    month: 12,
+                    day: 17,
+                    weekday: "周二",
+                    weather: "多云"
+                }
+            },
+            {
+                id: 3,
+                title: "楼畔积云",
+                description: "高耸的居民楼旁，巨大的白色积云在蓝紫色天空下显得格外壮观",
+                imageUrl: "images/photo3.jpg",
+                date: {
+                    year: 2024,
+                    month: 12,
+                    day: 16,
+                    weekday: "周一",
+                    weather: "晴"
+                }
+            },
+            {
+                id: 4,
+                title: "街巷晚霞",
+                description: "居民楼间的小路尽头，橙红色晚霞铺满天空，温暖而静谧",
+                imageUrl: "images/photo4.jpg",
+                date: {
+                    year: 2024,
+                    month: 12,
+                    day: 15,
+                    weekday: "周日",
+                    weather: "阴"
+                }
+            },
+            {
+                id: 5,
+                title: "落日熔金",
+                description: "夕阳西下，金色阳光洒满天际，树木剪影勾勒出宁静的黄昏",
+                imageUrl: "images/photo5.jpg",
+                date: {
+                    year: 2024,
+                    month: 12,
+                    day: 14,
+                    weekday: "周六",
+                    weather: "晴"
+                }
+            },
+            {
+                id: 6,
+                title: "湖光山色",
+                description: "平静的湖水呈现碧绿色，四周青山环绕，岸边草木葱茏",
+                imageUrl: "images/photo6.jpg",
+                date: {
+                    year: 2024,
+                    month: 12,
+                    day: 13,
+                    weekday: "周五",
+                    weather: "雪"
+                }
+            },
+            {
+                id: 7,
+                title: "飞瀑留影",
+                description: "手持照片与眼前的瀑布同框，瀑布从陡峭山崖倾泻而下，水花四溅",
+                imageUrl: "images/photo7.jpg",
+                date: {
+                    year: 2024,
+                    month: 12,
+                    day: 12,
+                    weekday: "周四",
+                    weather: "晴"
+                }
+            },
+            {
+                id: 8,
+                title: "江畔烟火",
+                description: "夜晚的江面上，绚烂的烟火绽放，倒映在波光粼粼的水面，岸边灯火璀璨",
+                imageUrl: "images/photo8.jpg",
+                date: {
+                    year: 2024,
+                    month: 12,
+                    day: 11,
+                    weekday: "周三",
+                    weather: "晴"
+                }
+            },
+            {
+                id: 9,
+                title: "月洞松影",
+                description: "圆形拱门框住了夕阳下的松树，枝干交错，阳光透过枝叶洒下斑驳光影",
+                imageUrl: "images/photo9.jpg",
+                date: {
+                    year: 2024,
+                    month: 12,
+                    day: 10,
+                    weekday: "周二",
+                    weather: "多云"
+                }
+            },
+            {
+                id: 10,
+                title: "峰顶日出",
+                description: "云海之上，红日初升，为陡峭的山峰染上一层柔和的粉色光晕",
+                imageUrl: "images/photo10.jpg",
+                date: {
+                    year: 2024,
+                    month: 12,
+                    day: 9,
+                    weekday: "周一",
+                    weather: "雨"
+                }
+            },
+            {
+                id: 11,
+                title: "屋畔疏林",
+                description: "红瓦屋顶旁，两棵疏枝高树直指灰蒙天空，清冷氛围裹着静谧的日常",
+                imageUrl: "images/photo11.jpg",
+                date: {
+                    year: 2024,
+                    month: 12,
+                    day: 8,
+                    weekday: "周日",
+                    weather: "晴"
+                }
+            },
+            {
+                id: 12,
+                title: "绿野山居",
+                description: "湛蓝晴空衬着白云，青山裹满浓绿林海，山脚下的绿野田埂间草木蓬勃，满是山野生机",
+                imageUrl: "images/photo12.jpg",
+                date: {
+                    year: 2024,
+                    month: 12,
+                    day: 7,
+                    weekday: "周六",
+                    weather: "晴"
+                }
+            }
+        ];
+
+        const photoGrid = document.getElementById('photoGrid');
+        const photoModal = document.getElementById('photoModal');
+        const modalImage = document.getElementById('modalImage');
+
+        function getLikes() { return JSON.parse(localStorage.getItem('photoLikes') || '{}'); }
+        function saveLikes(likes) { localStorage.setItem('photoLikes', JSON.stringify(likes)); }
+        function getComments() { return JSON.parse(localStorage.getItem('photoComments') || '[]'); }
+        function saveComments(comments) { localStorage.setItem('photoComments', JSON.stringify(comments)); }
+
+        function renderPhotos() {
+            const likes = getLikes();
+            photoGrid.innerHTML = photos.map(photo => {
+                const isLiked = likes[photo.id] || false;
+                const likeCount = Object.values(likes).filter(Boolean).length;
+                return `
+                    <div class="photo-card">
+                        <div class="photo-container">
+                            <img src="${photo.imageUrl}" alt="${photo.title}" onclick="openModal('${photo.imageUrl}')">
+                        </div>
+                        <div class="photo-info">
+                            <div class="timeline">
+                                <div class="timeline-year">${photo.date.year}</div>
+                                <div class="timeline-month">${photo.date.month}月</div>
+                                <div class="timeline-day">${photo.date.day}日（${photo.date.weekday}）· ${photo.date.weather}</div>
+                            </div>
+                            <h3 class="photo-title">${photo.title}</h3>
+                            <p class="photo-description">${photo.description}</p>
+                            <div class="photo-actions">
+                                <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${photo.id})">
+                                    <i class="fas fa-heart"></i>
+                                    <span class="like-count ${likeCount > 0 ? 'visible' : ''}">${likeCount}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openModal(imageUrl) {
+            modalImage.src = imageUrl;
+            photoModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            photoModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function toggleLike(photoId) {
+            const likes = getLikes();
+            likes[photoId] = !likes[photoId];
+            saveLikes(likes);
+            renderPhotos();
+        }
+
+        photoModal.addEventListener('click', () => closeModal());
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+        let startX = 0;
+        photoModal.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
+        photoModal.addEventListener('touchend', e => {
+            const diff = startX - e.changedTouches[0].clientX;
+            if (diff > 50) closeModal();
+        });
+
+        function addComment() {
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            if (text) {
+                const comments = getComments();
+                comments.unshift({ id: Date.now(), text: text, createdAt: new Date().toISOString() });
+                saveComments(comments);
+                input.value = '';
+                renderComments();
+            }
+        }
+
+        function renderComments() {
+            const comments = getComments();
+            const commentList = document.getElementById('commentList');
+            commentList.innerHTML = comments.map(comment => {
+                const timeStr = new Date(comment.createdAt).toLocaleString('zh-CN', {
+                    year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+                });
+                return `<div class="comment-item"><div class="comment-text">${comment.text}</div><div class="comment-time">${timeStr}</div></div>`;
+            }).join('');
+        }
+
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('backToTop');
+            btn.classList.toggle('visible', window.scrollY > 300);
+        });
+
+        renderPhotos();
+        renderComments();
+    </script>
+</body>
+</html>

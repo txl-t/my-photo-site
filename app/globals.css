@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 设置 Inter 字体 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --color-primary: #111111;
+  --color-secondary: #666666;
+  --color-background: #FFFFFF;
+  --color-accent: #F43F5E;
+  --color-border: #E0E0E0;
+}
+
+.dark {
+  --color-primary: #FFFFFF;
+  --color-secondary: #AAAAAA;
+  --color-background: #111111;
+  --color-accent: #F43F5E;
+  --color-border: #333333;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* 平滑滚动 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 隐藏滚动条但保留功能 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary);
+}

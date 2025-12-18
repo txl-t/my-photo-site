@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系 - 隔壁的日常光</title>
+    <!-- 引入Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #F8F6F2;
+            color: #2C2C2C;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+
+
+        /* 导航栏样式 */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(248, 246, 242, 0.95);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        nav.hidden {
+            transform: translateY(-100%);
+        }
+
+        .logo {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2C2C2C;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2C2C2C;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #A8B5A0;
+        }
+
+        /* 汉堡菜单样式 */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background-color: #2C2C2C;
+            transition: all 0.3s ease;
+        }
+
+        /* 内容区样式 */
+        .contact-content {
+            padding: 10rem 5% 5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-content h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: #2C2C2C;
+        }
+
+        .contact-content .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #666;
+        }
+
+        .contact-content .email {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: #A8B5A0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-content .email:hover {
+            color: #2C2C2C;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: #A8B5A0;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #95A08D;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #A8B5A0;
+            border: 1px solid #A8B5A0;
+        }
+
+        .btn-secondary:hover {
+            background-color: #A8B5A0;
+            color: white;
+        }
+
+        /* 订阅弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: #F8F6F2;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content h2 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #2C2C2C;
+        }
+
+        .modal-content p {
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #E0DBD3;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: white;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* 页脚样式 */
+        footer {
+            text-align: center;
+            padding: 3rem 5%;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #E0DBD3;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            /* 导航栏响应式 */
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                right: -100%;
+                flex-direction: column;
+                background-color: rgba(248, 246, 242, 0.98);
+                width: 100%;
+                padding: 2rem;
+                transition: right 0.3s ease;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            /* 内容区响应式 */
+            .contact-content {
+                padding: 8rem 5% 3rem;
+            }
+
+            .contact-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .contact-content .subtitle {
+                font-size: 1rem;
+            }
+
+            .contact-content .email {
+                font-size: 1.2rem;
+            }
+
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            /* 弹窗响应式 */
+            .modal-content {
+                margin: 30% auto;
+                padding: 1.5rem;
+            }
+
+            .modal-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav id="navbar">
+        <a href="index.html" class="logo">隔壁的日常光</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="photography-portfolio.html">作品</a></li>
+            <li><a href="contact.html" class="active">联系</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- 内容区 -->
+    <main class="contact-content">
+        <h1>说点什么</h1>
+        <p class="subtitle">看到什么想聊的，直接发邮件给我</p>
+        <a href="mailto:2741735088@qq.com" class="email">2741735088@qq.com</a>
+        <div class="buttons">
+            <button class="btn btn-primary" onclick="openSubscribeModal()">订阅周五邮件</button>
+            <a href="index.html" class="btn btn-secondary">返回首页</a>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>所有照片均为日常记录，未经许可请勿转载</p>
+    </footer>
+
+    <!-- 订阅弹窗 -->
+    <div id="subscribeModal" class="modal">
+        <div class="modal-content">
+            <h2>订阅周五邮件</h2>
+            <p>每周五我会发送一封包含本周精选照片的邮件</p>
+            <input type="email" id="emailInput" placeholder="请输入您的邮箱">
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeSubscribeModal()">取消</button>
+                <button class="btn btn-primary" onclick="subscribe()">订阅</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 导航栏滚动隐藏效果
+        let lastScrollTop = 0;
+        const navbar = document.getElementById('navbar');
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                navbar.classList.add('hidden');
+            } else {
+                navbar.classList.remove('hidden');
+            }
+            
+            lastScrollTop = scrollTop;
+        });
+
+        // 汉堡菜单功能
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        // 订阅弹窗功能
+        const subscribeModal = document.getElementById('subscribeModal');
+        const emailInput = document.getElementById('emailInput');
+
+        function openSubscribeModal() {
+            subscribeModal.style.display = 'block';
+        }
+
+        function closeSubscribeModal() {
+            subscribeModal.style.display = 'none';
+            emailInput.value = '';
+        }
+
+        function subscribe() {
+            const email = emailInput.value.trim();
+            if (email) {
+                // 保存到 localStorage
+                localStorage.setItem('subscribedEmail', email);
+                alert('订阅成功！感谢您的支持！');
+                closeSubscribeModal();
+            } else {
+                alert('请输入有效的邮箱地址');
+            }
+        }
+
+        // 点击模态框外部关闭
+        window.addEventListener('click', (e) => {
+            if (e.target === subscribeModal) {
+                closeSubscribeModal();
+            }
+        });
+    </script>
+</body>
+</html>
